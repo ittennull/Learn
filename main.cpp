@@ -21,13 +21,14 @@ int main(int argc, char *argv[])
 	qmlRegisterType<QStringListModel>("QStringListModel", 1, 0, "QStringListModel");
 
 	QtQuick2ApplicationViewer viewer;
-	viewer.setIcon(QIcon(":/new/g/dictionary-icon.png"));
 	viewer.rootContext()->setContextProperty("app", &application);
 	viewer.rootContext()->setContextProperty("checkModeCpp", &application.getCheckMode());
 	viewer.rootContext()->setContextProperty("dictionaryModeCpp", &application.getDictionaryMode());
 	viewer.rootContext()->setContextProperty("rememberModeCpp", &application.getRememberMode());
 	viewer.setMainQmlFile(QStringLiteral("qml/Learn/main.qml"));
 	viewer.showExpanded();
+
+	viewer.setIcon(QIcon(":/new/g/dictionary-icon.png"));
 
     return app.exec();
 }
