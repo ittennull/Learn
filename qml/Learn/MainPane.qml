@@ -87,6 +87,7 @@ Rectangle
 		{
 			anchors.left: parent.left
 			anchors.right: parent.right
+			anchors.leftMargin: 10
 			height: 40
 
 			visible: app.AppMode == App.Dictionary

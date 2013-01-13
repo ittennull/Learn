@@ -39,7 +39,6 @@ Rectangle
 			anchors.bottom: parent.bottom
 
 			text: checkModeCpp.NoMoreData ? "" : checkModeCpp.Russian
-			font.family: "Cousine"
 			font.pixelSize: 20
 			wrapMode: Text.WordWrap
 			verticalAlignment: Text.AlignVCenter
@@ -51,7 +50,7 @@ Rectangle
 			x: 20
 			y: 20
 			text: "Reset"
-			onClicked: checkModeCpp.reset()
+			onClicked: {checkModeCpp.reset(); numErrors=0}
 		}
 	}
 
@@ -134,7 +133,6 @@ Rectangle
 			anchors.top: parent.top
 			anchors.bottom: parent.bottom
 
-			font.family: "Lato Light"
 			font.pixelSize: 25
 
 			text: "<font color=#0000ff size=15>" + checkModeCpp.LastEnglish + "</font>   " +

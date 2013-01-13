@@ -37,7 +37,7 @@ Rectangle
 	{
 		Rectangle
 		{
-			width: 50
+			width: 30
 			height: root.height
 			color: 'transparent'
 

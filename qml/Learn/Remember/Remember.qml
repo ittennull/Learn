@@ -6,7 +6,7 @@ Rectangle
 	id: root
 	anchors.fill: parent
 
-	Component.onCompleted: root.focus = true
+	onVisibleChanged: focus=visible
 
 	Rectangle
 	{
