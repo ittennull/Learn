@@ -1,0 +1,6 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=LearnEnglish
+Exec=/home/d/qt/LearnEnglishProject/LearnEnglish-Release/LearnEnglish
+Icon=/home/d/qt/LearnEnglishProject/LearnEnglish-Release/icon.png

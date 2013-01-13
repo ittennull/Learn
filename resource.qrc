@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/new/g">
+        <file>dictionary-icon.png</file>
+    </qresource>
+</RCC>
