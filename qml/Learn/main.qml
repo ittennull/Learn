@@ -51,6 +51,7 @@ Rectangle
 
 	Component.onCompleted: activateMode(app.AppMode)
 
+
 	MainPane
 	{
 		id: mainPane

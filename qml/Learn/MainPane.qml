@@ -26,22 +26,23 @@ Rectangle
 		anchors.left: parent.left
 		anchors.right: parent.right
 		anchors.top: parent.top
+		anchors.topMargin: 5
 
-		AppModeButton
+		FancyButton
 		{
 			text: "Check"
 			anchors.horizontalCenter: parent.horizontalCenter
 			onClicked: activateCheckMode();
 		}
 
-		AppModeButton
+		FancyButton
 		{
 			text: "Remember"
 			anchors.horizontalCenter: parent.horizontalCenter
 			onClicked: activateRememberMode();
 		}
 
-		AppModeButton
+		FancyButton
 		{
 			text: "Dictionary"
 			anchors.horizontalCenter: parent.horizontalCenter

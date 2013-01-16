@@ -5,28 +5,29 @@ Rectangle
 	signal clicked()
 	property alias text: textElement.text
 
-
+	property color gradientStop2Color: "#5ea63d"
+	property color gradientStop2HighlightedColor: '#7fc85f'
 
 	width: 200
 	height: 50
 
 	border.color: "black"
-	border.width: 0
-	radius: 20
-	gradient: Gradient {
-		GradientStop {
-			position: 0.00;
-			color: "#ffffff";
-		}
-		GradientStop {
-			position: 0.54;
-			color: "#e0e62a";
-		}
-		GradientStop {
-			position: 1.00;
-			color: "#ffffff";
-		}
-	}
+	border.width: 1
+	radius: 11
+ gradient: Gradient {
+	 GradientStop {
+		 position: 0.060
+		 color: "#00000000"
+	 }
+
+	 GradientStop {
+		 id: gradientStop2
+		 position: 1
+		 color: gradientStop2Color
+	 }
+ }
+ clip: false
+ smooth: true
 
 	Text
 	{
@@ -49,16 +50,16 @@ Rectangle
 
 		onEntered:
 		{
-			textElement.color = 'green'
+			gradientStop2.color = gradientStop2HighlightedColor
 		}
 
 		onExited:
 		{
-			textElement.color = 'black'
+			gradientStop2.color = gradientStop2Color
 		}
 
 		onPressed: border.width=2
-		onReleased: border.width=0
+		onReleased: border.width=1
 
 	}
 }

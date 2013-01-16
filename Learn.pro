@@ -39,3 +39,6 @@ RESOURCES += \
 
 QT += qml quick widgets
 
+OTHER_FILES += \
+    qml/Learn/FancyButton.qml
+

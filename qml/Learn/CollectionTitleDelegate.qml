@@ -4,10 +4,11 @@ import QtQuick 2.0
 Rectangle
 {
 	id: root
-	border.width: 0
+	border.width: 1
 	height: 25
-	color: ListView.isCurrentItem ? '#4400ee00' : "white"
-	radius: 5
+	color: ListView.isCurrentItem ? "#5ea63d" : "white"
+	radius: 6
+	smooth: true
 
 	anchors.left: parent.left
 	anchors.right: parent.right
@@ -35,6 +36,8 @@ Rectangle
 
 	Row
 	{
+		x:5
+
 		Rectangle
 		{
 			width: 30
@@ -54,6 +57,7 @@ Rectangle
 				width: 20
 				height: parent.height
 				visible: mouseArea.isHovered
+				color: 'transparent'
 
 				Rectangle
 				{
@@ -61,7 +65,7 @@ Rectangle
 					width: parent.width
 					height: 10
 					anchors.verticalCenter: parent.verticalCenter
-					radius: 5
+					radius: 3
 				}
 
 				MouseArea
@@ -85,7 +89,7 @@ Rectangle
 		State {
 			name: "mouseOver"
 			when: mouseArea.isHovered
-			PropertyChanges {target: root; color: '#7700ff00'}
+			PropertyChanges {target: root; color: "#775ea63d"}
 			PropertyChanges {target: text; font.weight: mouseArea.pressed ? Font.Bold : Font.Normal}
 		}
 	]

@@ -171,25 +171,26 @@ Rectangle
 			anchors.leftMargin: 10
 
 			verticalAlignment: Text.AlignVCenter
-			color: '#338800'
+			color: "#5ea63d"
 			font.bold: true
 
 			text: dictionaryModeCpp.CurrentCollectionModel.Count
 		}
 
-		Button
+		FancyButton
 		{
-			anchors.top: transcriptionTextField.bottom
-			anchors.bottom: parent.bottom
-			anchors.left: parent.left
-			anchors.horizontalCenter: rusTextField.horizontalCenter
-			anchors.topMargin: 0
-			anchors.bottomMargin: 0
-			anchors.leftMargin: 100
-			anchors.rightMargin: 100
+//			anchors.top: transcriptionTextField.bottom
+//			anchors.bottom: parent.bottom
+//			anchors.left: parent.left
+//			anchors.horizontalCenter: rusTextField.horizontalCenter
+//			anchors.topMargin: 10
+//			anchors.bottomMargin: 10
+//			anchors.leftMargin: 100
+//			anchors.rightMargin: 100
 
-			//height: 100
-			//width: 100
+			anchors.horizontalCenter: rusTextField.horizontalCenter
+			anchors.top: transcriptionTextField.bottom
+			anchors.topMargin: 30
 
 			text: "Add"
 
