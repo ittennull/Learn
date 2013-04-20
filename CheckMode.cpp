@@ -149,10 +149,3 @@ void CheckMode::setCurrentRecordIndex(int idx)
 	}
 }
 
-void CheckMode::onCollectionSaved(const QString &name)
-{
-	if(_collection != nullptr && _collection->getName() == name)
-	{
-		setCollection(nullptr);
-	}
-}

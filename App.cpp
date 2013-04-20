@@ -1,8 +1,9 @@
 #include "App.h"
-
+#include <QtWidgets/QApplication>
+#include <QWindow>
+#include <QMessageBox>
 
 App::App()
-	: _appMode(AppMode::Dictionary)
 {
 	QStringList collectionNames;
 	for(const QString& s: _storage.getCollectionsNames())
@@ -10,12 +11,27 @@ App::App()
 		collectionNames.append(s);
 	}
 
+    QObject::connect(&_dictionaryMode, &DictionaryMode::markCollectionDirty, [this]()
+    {
+        _collectionIsDirty = true;
+        _window->setTitle(_window->title().append("*"));
+    });
+    QObject::connect(this, &App::sigCollectionSaved, [this](const QString&)
+    {
+        _collectionIsDirty = false;
+        auto title = _window->title();
+        _window->setTitle(title.left(title.length() - 1));
+    });
+
 	_collectionNamesModel = new QStringListModel(collectionNames);
 
-	QObject::connect(this, SIGNAL(sigCollectionSaved(QString)), &_checkMode, SLOT(onCollectionSaved(QString)));
+    _timer->setInterval(10*1000);
+    QObject::connect(_timer.get(), &QTimer::timeout, [this]() { saveCollection(); });
 
 	if (collectionNames.size() != 0)
 		setCollection(collectionNames[0]);
+
+    setMode(AppMode::Dictionary);
 }
 
 App::~App()
@@ -25,7 +41,7 @@ App::~App()
 
 void App::setAppMode(App::AppMode mode)
 {
-	if(_appMode != mode)
+    if(_appMode != mode)
 	{
 		setMode(mode);
 		emit appModeChanged();
@@ -54,15 +70,16 @@ void App::deleteCollection(int index)
 
 void App::setMode(AppMode appMode)
 {
-	if(_appMode == appMode)
-		return;
-
-	if(_appMode == AppMode::Dictionary)
+    if(_appMode == AppMode::Dictionary)
 	{
 		saveCollection();
+        _timer->stop();
 	}
 
 	_appMode = appMode;
+
+    if(_appMode == AppMode::Dictionary)
+        _timer->start();
 
 	setCollection();
 }
@@ -82,12 +99,12 @@ void App::setCollection()
 	case AppMode::Dictionary:
 		_dictionaryMode.setCollection(&_currentCollection);
 		break;
-	}
+    }
 }
 
 void App::setCollection(QString name)
 {
-	if(_currentCollection.getName() != name)
+    if(_currentCollection.getName() != name)
 	{
 		saveCollection();
 
@@ -99,7 +116,7 @@ void App::setCollection(QString name)
 
 void App::saveCollection()
 {
-	if(_appMode == AppMode::Dictionary && _dictionaryMode.hasCollectionChanged())
+    if(_appMode == AppMode::Dictionary && _collectionIsDirty)
 	{
 		_storage.saveCollection(_currentCollection);
 		emit sigCollectionSaved(_currentCollection.getName());

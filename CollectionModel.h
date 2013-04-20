@@ -12,7 +12,6 @@ class CollectionModel : public QAbstractTableModel
 	Q_OBJECT
 
 	Collection* _collection;
-	bool _changed;
 
 public:
 	enum ERoles {
@@ -42,10 +41,9 @@ public:
 	Q_INVOKABLE QString getTranscription(int index) const;
 	Q_INVOKABLE QStringList getRusList(int index) const;
 
-	bool isChanged() const {return _changed;}
-
 signals:
 	void countChanged();
+    void makeDirty();
 
 public slots:
 	

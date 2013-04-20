@@ -2,7 +2,7 @@
 #include "QStringList"
 
 CollectionModel::CollectionModel(Collection* collection) :
-	_collection(collection), _changed(false)
+    _collection(collection)
 {
 }
 
@@ -55,8 +55,7 @@ void CollectionModel::addRecord(const QString &eng, const QString& transcription
 	endInsertRows();
 
 	emit countChanged();
-
-	_changed = true;
+    emit makeDirty();
 }
 
 void CollectionModel::removeRecord(int index)
@@ -68,8 +67,7 @@ void CollectionModel::removeRecord(int index)
 	endRemoveRows();
 
 	emit countChanged();
-
-	_changed = true;
+    emit makeDirty();
 }
 
 void CollectionModel::setRecord(int idx, const QString &eng, const QString& transcription, const QStringList &rusList)
@@ -78,8 +76,7 @@ void CollectionModel::setRecord(int idx, const QString &eng, const QString& tran
 
 	auto modelIndex = index(idx, 0);
 	emit dataChanged(modelIndex, modelIndex);
-
-	_changed = true;
+    emit makeDirty();
 }
 
 QString CollectionModel::getEng(int index) const

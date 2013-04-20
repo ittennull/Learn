@@ -29,6 +29,9 @@ int main(int argc, char *argv[])
 	viewer.showExpanded();
 
 	viewer.setIcon(QIcon(":/new/g/dictionary-icon.png"));
+    viewer.setTitle("Learn");
+
+    application.setWindow(&viewer);
 
     return app.exec();
 }

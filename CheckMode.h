@@ -58,9 +58,6 @@ signals:
 	void noMoreDataChanged();
 	void currentTaskNumberChanged();
 	void totalTaskNumberChanged();
-	
-public slots:
-	void onCollectionSaved(const QString& name);
 
 private:
 	const Record& currentRecord() const {return (*_collection)[_indices[_currentIndex]];}

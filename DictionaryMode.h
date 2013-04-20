@@ -18,13 +18,12 @@ public:
 	CollectionModel* getCurrentCollectionModel() const {return _currentCollectionModel.get();}
 
 	void setCollection(Collection* collection);
-
-	bool hasCollectionChanged() const;
 	
 signals:
 	void currentCollectionModelChanged();
+    void markCollectionDirty();
 
-public slots:
+private slots:
 	
 };
 
