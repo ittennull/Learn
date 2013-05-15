@@ -1,5 +1,5 @@
-import QtQuick 2.0
-import QtDesktop 1.0
+import QtQuick 2.1
+import QtQuick.Controls 1.0
 import "../"
 
 Rectangle
@@ -302,10 +302,9 @@ Rectangle
 		anchors.top: editingRectangle.bottom
 		anchors.bottom: parent.bottom
 		anchors.margins: 10
-		horizontalScrollBar.visible: false
 
-		TableColumn{ id: engColumn; role: "eng" ; title: "English" }
-		TableColumn{ id: rusListColumn; role: "ruslist" ; title: "Russian"; width: 1000 }
+        TableViewColumn{ id: engColumn; role: "eng" ; title: "English" }
+        TableViewColumn{ id: rusListColumn; role: "ruslist" ; title: "Russian"; width: 1000 }
 		model: dictionaryModeCpp.CurrentCollectionModel
 
 		itemDelegate:Item{}
@@ -319,12 +318,12 @@ Rectangle
 				height: childrenRect.height
 
 				function getBackgroundColor() {
-					return itemSelected ? selectedBackground :
+                    return rowSelected ? selectedBackground :
 										  (index % 2 == 0) ? "white" : "#eeeeee"
 				}
 
 				function getTextColor() {
-					return itemSelected ? "white" : "black"
+                    return rowSelected ? "white" : "black"
 				}
 
 
@@ -363,7 +362,7 @@ Rectangle
 
 		onActivated:
 		{
-			dictionary.editRecord(currentIndex);
+            dictionary.editRecord(currentRow);
 		}
 
 		Keys.onDeletePressed:
