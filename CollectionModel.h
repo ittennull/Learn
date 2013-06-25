@@ -1,57 +1,58 @@
 #ifndef COLLECTIONMODEL_H
 #define COLLECTIONMODEL_H
 
-#include <QAbstractTableModel>
+#include <QAbstractListModel>
 #include <QVariant>
 #include <QStringList>
 #include "Collection.h"
 
 
-class CollectionModel : public QAbstractTableModel
+class CollectionModel : public QAbstractListModel
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	Collection* _collection;
-
-public:
-	enum ERoles {
-			 EngRole = Qt::UserRole + 1,
-			 RusListRole
-		 };
+    Collection* _collection;
 
 public:
-	CollectionModel(){}
-	CollectionModel(Collection* collection);
+    enum ERoles {
+        EngRole = Qt::UserRole + 1,
+        RusListRole,
+        Transcription
+    };
 
-	Q_PROPERTY(int Count READ rowCount NOTIFY countChanged)
+public:
+    CollectionModel(){}
+    CollectionModel(Collection* collection);
 
-	const Collection* getCollection() const {return _collection;}
+    Q_PROPERTY(int Count READ rowCount NOTIFY countChanged)
 
-	virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
-	virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const override;
-	virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
+    const Collection* getCollection() const {return _collection;}
 
-	virtual Qt::ItemFlags flags ( const QModelIndex & index ) const override;
+    virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
+    virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
 
-	Q_INVOKABLE void addRecord(const QString& eng, const QString& transcription, const QStringList& rusList);
-	Q_INVOKABLE void removeRecord(int index);
-	Q_INVOKABLE void setRecord(int idx, const QString &eng, const QString& transcription, const QStringList &rusList);
+    virtual Qt::ItemFlags flags ( const QModelIndex & index ) const override;
 
-	Q_INVOKABLE QString getEng(int index) const;
-	Q_INVOKABLE QString getTranscription(int index) const;
-	Q_INVOKABLE QStringList getRusList(int index) const;
+    Q_INVOKABLE void addRecord(const QString& eng, const QString& transcription, const QStringList& rusList);
+    Q_INVOKABLE void removeRecord(int index);
+    Q_INVOKABLE void setRecord(int idx, const QString &eng, const QString& transcription, const QStringList &rusList);
+
+    Q_INVOKABLE QString getEng(int index) const;
+    Q_INVOKABLE QString getTranscription(int index) const;
+    Q_INVOKABLE QStringList getRusList(int index) const;
 
 signals:
-	void countChanged();
+    void countChanged();
     void makeDirty();
 
 public slots:
-	
-private:
-	Record createRecord(const QString& eng, const QString& transcription, const QStringList& rusList);
-	QString prepareTranscription(const QString& str);
 
-	QHash<int, QByteArray> roleNames() const override;
+private:
+    Record createRecord(const QString& eng, const QString& transcription, const QStringList& rusList);
+    QString prepareTranscription(const QString& str);
+
+    QHash<int, QByteArray> roleNames() const override;
 };
 
 #endif // COLLECTIONMODEL_H

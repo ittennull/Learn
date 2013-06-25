@@ -11,6 +11,7 @@ QHash<int, QByteArray> CollectionModel::roleNames() const
 	QHash<int, QByteArray> roles;
 	roles[EngRole] = "eng";
 	roles[RusListRole] = "ruslist";
+    roles[Transcription] = "transcription";
 	return roles;
 }
 
@@ -34,8 +35,12 @@ QVariant CollectionModel::data(const QModelIndex &index, int role) const
 	}
 	else if (role == RusListRole)
 	{
-		return QVariant(record.RusList);
+        return QVariant(record.RusList);
 	}
+    else if (role == Transcription)
+    {
+        return QVariant(record.Transcription);
+    }
 
 	return QVariant();
 }

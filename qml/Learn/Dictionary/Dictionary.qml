@@ -23,20 +23,22 @@ Rectangle
         engTextField.focus = true
         editingLayout.editedRusIndex = -1
         editedRecordIndex = -1
+        deleteRecordButton.visible = false
     }
 
     function editRecord(recordIndex)
     {
         editedRecordIndex = recordIndex
 
-        engTextField.text = dictionaryModeCpp.CurrentCollectionModel.getEng(recordIndex)
-        rusTextField.text = ""
-        transcriptionTextField.text = dictionaryModeCpp.CurrentCollectionModel.getTranscription(recordIndex)
-
-        var rusList = dictionaryModeCpp.CurrentCollectionModel.getRusList(recordIndex)
         rusListModel.clear()
+        var rusList = dictionaryModeCpp.CurrentCollectionModel.getRusList(recordIndex)
         for(var i=0; i<rusList.length; i++)
             rusListModel.append({rus: rusList[i]})
+
+        engTextField.text = dictionaryModeCpp.CurrentCollectionModel.getEng(recordIndex)
+        transcriptionTextField.text = dictionaryModeCpp.CurrentCollectionModel.getTranscription(recordIndex)
+
+        deleteRecordButton.visible = true
     }
 
     Connections
@@ -122,6 +124,29 @@ Rectangle
             text: dictionaryModeCpp.CurrentCollectionModel.Count
         }
 
+        Text
+        {
+            id: deleteRecordButton
+            Layout.row: 3
+            Layout.alignment: Qt.AlignRight
+            text: "-delete-"
+            color: 'blue'
+            height: 30
+            visible: false
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    var onOK = function() {
+                        dictionaryModeCpp.CurrentCollectionModel.removeRecord(collectionRecordsTable.currentIndex);
+                        dictionary.setStartState();
+                    }
+                    deleteConfirmDialog.show("Really delete?", onOK)
+                }
+            }
+        }
+
+
         FancyButton
         {
             Layout.row: 3
@@ -129,6 +154,7 @@ Rectangle
             text: "Add"
             onClicked: parent.addRecord()
         }
+
 
 
         ListView
@@ -159,6 +185,7 @@ Rectangle
                     {
                         id: removeButton
                         width: 30
+                        height: 30
 
                         Rectangle
                         {
@@ -203,125 +230,129 @@ Rectangle
         }
 
 
-        ListModel
+ListModel
+{
+    id:rusListModel
+}
+
+function addRecord()
+{
+    if (engTextField.text.length != 0 &&
+            (rusTextField.text.length != 0 || rusListModel.count != 0))
+    {
+        var rusList = []
+        for(var i=0; i<rusListModel.count; i++)
         {
-            id:rusListModel
+            rusList.push(rusListModel.get(i).rus)
         }
 
-        function addRecord()
+        if(rusTextField.text.length != 0 && editedRusIndex == -1)
+            rusList.push(rusTextField.text)
+
+        if(dictionary.editedRecordIndex == -1)
+            dictionaryModeCpp.CurrentCollectionModel.addRecord(engTextField.text, transcriptionTextField.text, rusList)
+        else
+            dictionaryModeCpp.CurrentCollectionModel.setRecord(dictionary.editedRecordIndex, engTextField.text, transcriptionTextField.text, rusList)
+
+        dictionary.setStartState()
+    }
+}
+
+Keys.onPressed:
+{
+    if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter)
+    {
+        if(event.modifiers & Qt.ControlModifier)
         {
-            if (engTextField.text.length != 0 &&
-                    (rusTextField.text.length != 0 || rusListModel.count != 0))
-            {
-                var rusList = []
-                for(var i=0; i<rusListModel.count; i++)
-                {
-                    rusList.push(rusListModel.get(i).rus)
-                }
-
-                if(rusTextField.text.length != 0 && editedRusIndex == -1)
-                    rusList.push(rusTextField.text)
-
-                if(dictionary.editedRecordIndex == -1)
-                    dictionaryModeCpp.CurrentCollectionModel.addRecord(engTextField.text, transcriptionTextField.text, rusList)
-                else
-                    dictionaryModeCpp.CurrentCollectionModel.setRecord(dictionary.editedRecordIndex, engTextField.text, transcriptionTextField.text, rusList)
-
-                dictionary.setStartState()
-            }
+            addRecord()
         }
-
-        Keys.onPressed:
-        {
-            if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter)
-            {
-                if(event.modifiers & Qt.ControlModifier)
-                {
-                    addRecord()
-                }
-            }
-        }
+    }
+}
 
 }
 
-
-TableView
-{
-    id: collectionRecordsTable
+ScrollView {
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: editingLayout.bottom
     anchors.bottom: parent.bottom
     anchors.margins: 10
 
-    TableViewColumn{ id: engColumn; role: "eng" ; title: "English" }
-    TableViewColumn{ id: rusListColumn; role: "ruslist" ; title: "Russian"; width: 1000 }
-    model: dictionaryModeCpp.CurrentCollectionModel
+    ListView
+    {
+        id: collectionRecordsTable
+        anchors.fill: parent
+        anchors.rightMargin: 1
 
-    itemDelegate:Item{}
+        model: dictionaryModeCpp.CurrentCollectionModel
 
-    rowDelegate: Component{
-        Row{
-            property var model2: model
-            property color selectedBackground: "#444499"
+        highlight: Rectangle {width: parent.width; color: "lightsteelblue"; radius: 5 }
+        highlightMoveDuration: 50
+        highlightResizeDuration: 0
 
-            width: childrenRect.width
-            height: childrenRect.height
+        focus: true
+        spacing: 10
+        clip: true
 
-            function getBackgroundColor() {
-                return rowSelected ? selectedBackground :
-                                     (index % 2 == 0) ? "white" : "#eeeeee"
-            }
-
-            function getTextColor() {
-                return rowSelected ? "white" : "black"
-            }
-
-
+        delegate: Component{
             Rectangle{
-                width: engColumn.width
-                color: getBackgroundColor()
-                height: rusListItem.height
+                color: 'transparent'
+                border.color: "black"
+                border.width: 1
+                radius: 3
 
-                Text {
-                    x: 5
-                    text: (model2 != null) ?model2.getEng(index) :""
-                    color: getTextColor()
-                }
-            }
-            Rectangle{
-                id: rusListItem
-                color: getBackgroundColor()
-                width: childrenRect.width
-                height: childrenRect.height
+                width: parent.width
+                height: childrens.height
 
-                Column{
+
+                Rectangle{
+                    id: childrens
+                    width: parent.width
                     height: childrenRect.height
-                    Repeater{
-                        model: (model2 != null) ?model2.getRusList(index) :0
-                        Text {
-                            width: collectionRecordsTable.width - engColumn.width
-                            text: "∙ " + modelData;
-                            color: getTextColor()
-                            wrapMode: Text.WordWrap
+                    color: 'transparent'
+
+                    Rectangle{
+                        id: engRect
+                        width: childrenRect.width
+                        height: childrenRect.height
+                        color: 'transparent'
+
+                        Text{
+                            x:5
+                            text: "<b>" + eng + "</b>" +
+                                  "<font color='#525252'>" + ((transcription == "") ? "" : " [ " + transcription + " ]") + "</font>"
                         }
                     }
+
+                    Rectangle
+                    {
+                        id: translationRect
+                        anchors.top: engRect.bottom
+                        height: childrenRect.height
+
+                        ListView
+                        {
+                            x: 10
+                            height: childrenRect.height
+
+                            model: ruslist
+
+                            delegate: Text{
+                                width: childrens.width - 10
+                                text: "∙ " + modelData;
+                                wrapMode: Text.WordWrap
+                            }
+                        }
+                    }
+
+                }
+
+                MouseArea{
+                    anchors.fill: parent
+                    onDoubleClicked: dictionary.editRecord(index)
+                    onClicked: collectionRecordsTable.currentIndex = index
                 }
             }
-        }
-    }
-
-    onActivated:
-    {
-        dictionary.editRecord(currentRow);
-    }
-
-    Keys.onDeletePressed:
-    {
-        if (currentIndex >= 0)
-        {
-            var onOK = function() {dictionaryModeCpp.CurrentCollectionModel.removeRecord(collectionRecordsTable.currentIndex)}
-            deleteConfirmDialog.show("Really delete?", onOK)
         }
     }
 }
