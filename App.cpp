@@ -23,7 +23,7 @@ App::App()
         _window->setTitle(title.left(title.length() - 1));
     });
 
-	_collectionNamesModel = new QStringListModel(collectionNames);
+    _collectionNamesModel = new QStringListModel(collectionNames, this);
 
     _timer->setInterval(10*1000);
     QObject::connect(_timer.get(), &QTimer::timeout, [this]() { saveCollection(); });
@@ -52,9 +52,9 @@ void App::createCollection(const QString &name)
 {
 	_storage.createCollection(name);
 
-	int newRowIndex = _collectionNamesModel->rowCount();
-	_collectionNamesModel->insertRows(newRowIndex, 1);
-	_collectionNamesModel->setData(_collectionNamesModel->index(newRowIndex, 0), name, Qt::DisplayRole);
+    int newRowIndex = _collectionNamesModel->rowCount();
+    _collectionNamesModel->insertRows(newRowIndex, 1);
+    _collectionNamesModel->setData(_collectionNamesModel->index(newRowIndex, 0), name, Qt::DisplayRole);
 
 	setCollection(name);
 
@@ -63,9 +63,10 @@ void App::createCollection(const QString &name)
 
 void App::deleteCollection(int index)
 {
-	QVariant name = _collectionNamesModel->data(_collectionNamesModel->index(index, 0), Qt::DisplayRole);
+    auto modelIndex = _collectionNamesModel->index(index);
+    QVariant name = _collectionNamesModel->data(modelIndex, Qt::DisplayRole);
 	_storage.deleteCollection(name.toString());
-	_collectionNamesModel->removeRows(index, 1);
+    _collectionNamesModel->removeRows(index, 1);
 }
 
 void App::setMode(AppMode appMode)

@@ -25,7 +25,7 @@ Collection Storage::getCollection(const QString& name) const
 	QFile file(filename);
 	if (!file.exists() || !file.open(QIODevice::ReadOnly))
 	{
-		std::string msg = std::string("can't find filename") + name.toStdString();
+        std::string msg = std::string("can't find filename '") + name.toStdString() + "'";
 		throw std::invalid_argument(msg);
 	}
 

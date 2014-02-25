@@ -1,6 +1,6 @@
-import QtQuick 2.1
-import QtQuick.Controls 1.0
-import QtQuick.Layouts 1.0
+import QtQuick 2.2
+import QtQuick.Controls 1.1
+import QtQuick.Layouts 1.1
 import "../"
 
 Rectangle
@@ -272,6 +272,7 @@ Keys.onPressed:
 }
 
 ScrollView {
+    id: scrollView
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: editingLayout.bottom
@@ -286,7 +287,7 @@ ScrollView {
 
         model: dictionaryModeCpp.CurrentCollectionModel
 
-        highlight: Rectangle {width: parent.width; color: "lightsteelblue"; radius: 5 }
+        highlight: Rectangle {width: scrollView.width; color: "lightsteelblue"; radius: 5 }
         highlightMoveDuration: 50
         highlightResizeDuration: 0
 

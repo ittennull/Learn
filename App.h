@@ -27,7 +27,7 @@ private:
 
 	Storage _storage;
 	Collection _currentCollection;
-	QStringListModel* _collectionNamesModel;
+    QStringListModel* _collectionNamesModel;
 
 	CheckMode _checkMode;
 	DictionaryMode _dictionaryMode;
@@ -49,7 +49,7 @@ public:
 	Q_INVOKABLE void createCollection(const QString& name);
 	Q_INVOKABLE void deleteCollection(int index);
 
-	Q_INVOKABLE QStringListModel* getCollectionsNamesModel() {return _collectionNamesModel;}
+    Q_INVOKABLE QStringListModel* getCollectionsNamesModel() {return _collectionNamesModel;}
 
 	CheckMode& getCheckMode() {return _checkMode;}
 	DictionaryMode& getDictionaryMode() {return _dictionaryMode;}

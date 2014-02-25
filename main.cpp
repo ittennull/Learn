@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
 	qmlRegisterType<App>("App", 1, 0, "App");
 	qmlRegisterType<CollectionModel>("CollectionModel", 1, 0, "CollectionModel");
-	qmlRegisterType<QStringListModel>("QStringListModel", 1, 0, "QStringListModel");
+    qmlRegisterType<QStringListModel>("QStringListModel", 1, 0, "QStringListModel");
 
 	QtQuick2ApplicationViewer viewer;
 	viewer.rootContext()->setContextProperty("app", &application);

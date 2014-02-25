@@ -1,4 +1,4 @@
-import QtQuick 2.1
+import QtQuick 2.2
 
 
 Rectangle
@@ -16,6 +16,8 @@ Rectangle
 	signal collectionTitleClicked(string collectionName)
 	signal deleteCollection(int index, string collectionName)
 
+    property string collectionName: model.display
+
 	MouseArea
 	{
 		id: mouseArea
@@ -26,7 +28,7 @@ Rectangle
 
 		onClicked:
 		{
-			parent.collectionTitleClicked(model.display)
+            parent.collectionTitleClicked(collectionName)
 			parent.ListView.view.currentIndex = index
 		}
 
@@ -71,7 +73,7 @@ Rectangle
 				MouseArea
 				{
 					anchors.fill: parent
-					onClicked: root.deleteCollection(index, model.display)
+                    onClicked: root.deleteCollection(index, collectionName)
 				}
 			}
 		}
@@ -81,7 +83,7 @@ Rectangle
 			id: text
 			height: root.height
 			verticalAlignment: Text.AlignVCenter
-			text: "<font color=#0000ff><i>" + model.display + "</i></font>"
+            text: "<font color=#0000ff><i>" + collectionName + "</i></font>"
 		}
 	}
 
