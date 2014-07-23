@@ -81,14 +81,13 @@ Rectangle
 				}
 			}
 
-			Keys.onPressed:
-			{
-				if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter)
-				{
-					checkModeCpp.next()
-					root.next(false)
-				}
-			}
+            function giveUpAndGoToNestWord(){
+                checkModeCpp.next()
+                root.next(false)
+            }
+
+            Keys.onReturnPressed: giveUpAndGoToNestWord()
+            Keys.onEnterPressed: giveUpAndGoToNestWord()
 		}
 	}
 
