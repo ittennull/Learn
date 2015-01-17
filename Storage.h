@@ -2,32 +2,40 @@
 #define STORAGE_H
 
 #include <vector>
-#include "QString"
-#include "Collection.h"
+#include <QString>
+#include <QStringList>
 
 
 class QXmlStreamReader;
 
+
+class Record
+{
+public:
+    QString Eng;
+    QString Transcription;
+    QStringList RusList;
+};
+
+typedef std::vector<Record> Collection;
+
+
 class Storage
 {
-	const QString CollectionsDirectoryName = "Collections";
+    const QString DatabaseName = "Collections.xml";
 
-	std::vector<QString> _collectionNames;
+    Collection _records;
 
 public:
 	Storage();
 
-	std::vector<QString> getCollectionsNames() const {return _collectionNames;}
-	Collection getCollection(const QString& name) const;
-	void saveCollection(const Collection& collection) const;
-	void createCollection(const QString& name);
-	void deleteCollection(const QString& name);
+    void save() const;
+
+    Collection& getCollection() { return _records; }
 
 private:
-	QString getCollectionsDirectoryName() const;
-	QString getCollectionFilename(const QString& name) const;
-
 	Record parseRecord(QXmlStreamReader& xml) const;
+    QString getDatabasePath() const;
 };
 
 #endif // STORAGE_H

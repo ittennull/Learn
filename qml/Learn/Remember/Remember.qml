@@ -1,5 +1,5 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick 2.4
+import QtQuick.Controls 1.3
 
 Rectangle
 {
@@ -20,9 +20,8 @@ Rectangle
 		Text
 		{
 			anchors.centerIn: parent
-			text: "<font size=20>" +
-				(rememberModeCpp.NoMoreData ? "\\(-_-)/" : rememberModeCpp.English) +
-				  "</font>"
+            font.pointSize: 20
+            text: (rememberModeCpp.NoMoreData ? "\\(-_-)/" : rememberModeCpp.English)
 		}
 
 		Button
@@ -78,19 +77,12 @@ Rectangle
 
 			wrapMode: Text.WordWrap
 
-
-			function getListOfRussians()
-			{
-				var str = "";
-				var list = rememberModeCpp.LastRussianList;
-				for(var i=0; i<list.length; i++)
-				{
-					str += "∙ " + list[i];
-					if(i !== list.legth - 1)
-						str += "<br>";
-				}
-				return str;
-			}
+            function getListOfRussians()
+            {
+                var list = rememberModeCpp.LastRussianList;
+                list = list.map(function(x) { return "∙ " + x;} )
+                return list.join("<br>")
+            }
 
 			function getTranscription()
 			{

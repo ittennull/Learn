@@ -1,6 +1,7 @@
 #include "RememberMode.h"
 #include <algorithm>
 #include <random>
+#include <numeric>
 
 
 RememberMode::RememberMode(QObject *parent) :
@@ -76,8 +77,7 @@ void RememberMode::reset()
 	}
 
 	_indices.resize(_collection->size());
-	for(size_t i=0; i<_indices.size(); i++)
-		_indices[i] = i;
+    std::iota(_indices.begin(), _indices.end(), 0);
 	std::random_shuffle(_indices.begin(), _indices.end());
 	emit totalTaskNumberChanged();
 
@@ -112,13 +112,5 @@ void RememberMode::setCurrentRecordIndex(int idx)
 	{
 		_currentIndex = idx;
 		emit currentTaskNumberChanged();
-	}
-}
-
-void RememberMode::onCollectionSaved(const QString &name)
-{
-	if(_collection != nullptr && _collection->getName() == name)
-	{
-		setCollection(nullptr);
 	}
 }

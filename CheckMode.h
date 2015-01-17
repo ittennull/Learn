@@ -2,8 +2,8 @@
 #define CHECKMODE_H
 
 #include <QObject>
-#include <Collection.h>
 #include <vector>
+#include "Storage.h"
 
 class CheckMode : public QObject
 {

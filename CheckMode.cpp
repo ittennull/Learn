@@ -1,6 +1,7 @@
 #include "CheckMode.h"
 #include <algorithm>
 #include <random>
+#include <numeric>
 
 CheckMode::CheckMode(QObject *parent) :
 	QObject(parent), _currentIndex(-1), _collection(nullptr), _russianIndex(-1), _noMoreData(true),
@@ -65,8 +66,7 @@ void CheckMode::reset()
 	}
 
 	_indices.resize(_collection->size());
-	for(size_t i=0; i<_indices.size(); i++)
-		_indices[i] = i;
+    std::iota(_indices.begin(), _indices.end(), 0);
 	std::random_shuffle(_indices.begin(), _indices.end());
 	emit totalTaskNumberChanged();
 

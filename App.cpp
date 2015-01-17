@@ -5,31 +5,24 @@
 
 App::App()
 {
-	QStringList collectionNames;
-	for(const QString& s: _storage.getCollectionsNames())
-	{
-		collectionNames.append(s);
-	}
-
     QObject::connect(&_dictionaryMode, &DictionaryMode::markCollectionDirty, [this]()
     {
-        _collectionIsDirty = true;
-        _window->setTitle(_window->title().append("*"));
+        _isDirty = true;
+        auto title = _window->title();
+        if(!title.endsWith("*"))
+            _window->setTitle(title.append("*"));
     });
-    QObject::connect(this, &App::sigCollectionSaved, [this](const QString&)
+    QObject::connect(this, &App::sigCollectionSaved, [this]()
     {
-        _collectionIsDirty = false;
+        _isDirty = false;
         auto title = _window->title();
         _window->setTitle(title.left(title.length() - 1));
     });
 
-    _collectionNamesModel = new QStringListModel(collectionNames, this);
-
     _timer->setInterval(10*1000);
     QObject::connect(_timer.get(), &QTimer::timeout, [this]() { saveCollection(); });
 
-	if (collectionNames.size() != 0)
-		setCollection(collectionNames[0]);
+    _currentCollection = &_storage.getCollection();
 
     setMode(AppMode::Dictionary);
 }
@@ -46,27 +39,6 @@ void App::setAppMode(App::AppMode mode)
 		setMode(mode);
 		emit appModeChanged();
 	}
-}
-
-void App::createCollection(const QString &name)
-{
-	_storage.createCollection(name);
-
-    int newRowIndex = _collectionNamesModel->rowCount();
-    _collectionNamesModel->insertRows(newRowIndex, 1);
-    _collectionNamesModel->setData(_collectionNamesModel->index(newRowIndex, 0), name, Qt::DisplayRole);
-
-	setCollection(name);
-
-	emit newCollectionCreated();
-}
-
-void App::deleteCollection(int index)
-{
-    auto modelIndex = _collectionNamesModel->index(index);
-    QVariant name = _collectionNamesModel->data(modelIndex, Qt::DisplayRole);
-	_storage.deleteCollection(name.toString());
-    _collectionNamesModel->removeRows(index, 1);
 }
 
 void App::setMode(AppMode appMode)
@@ -90,37 +62,25 @@ void App::setCollection()
 	switch(_appMode)
 	{
 	case AppMode::Check:
-		_checkMode.setCollection(&_currentCollection);
+        _checkMode.setCollection(_currentCollection);
 		break;
 
 	case AppMode::Remember:
-		_rememberMode.setCollection(&_currentCollection);
+        _rememberMode.setCollection(_currentCollection);
 		break;
 
 	case AppMode::Dictionary:
-		_dictionaryMode.setCollection(&_currentCollection);
+        _dictionaryMode.setCollection(_currentCollection);
 		break;
     }
 }
 
-void App::setCollection(QString name)
-{
-    if(_currentCollection.getName() != name)
-	{
-		saveCollection();
-
-		_currentCollection = _storage.getCollection(name);
-
-		setCollection();
-	}
-}
-
 void App::saveCollection()
 {
-    if(_appMode == AppMode::Dictionary && _collectionIsDirty)
+    if(_appMode == AppMode::Dictionary && _isDirty)
 	{
-		_storage.saveCollection(_currentCollection);
-		emit sigCollectionSaved(_currentCollection.getName());
+        _storage.save();
+        emit sigCollectionSaved();
 	}
 }
 

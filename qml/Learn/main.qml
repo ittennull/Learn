@@ -1,6 +1,6 @@
-import QtQuick 2.2
+import QtQuick 2.4
 import App 1.0
-import QtQuick.Controls 1.1
+import QtQuick.Controls 1.3
 import "Dictionary"
 import "CheckMode"
 import "Remember"
@@ -56,9 +56,7 @@ Rectangle
 	{
 		id: mainPane
 		anchors.left: parent.left
-		width: parent.width * 0.25
-		askCollectionNameDialog: askCollectionNameDialog
-		deleteConfirmDialog: deleteConfirmDialog
+        width: 250
 
 		onActivateDictionaryMode:
 		{
@@ -87,7 +85,6 @@ Rectangle
 		Dictionary
 		{
 			id: dictionary
-			deleteConfirmDialog: deleteConfirmDialog
 		}
 
 		CheckWindow
@@ -100,40 +97,5 @@ Rectangle
 			id: rememberWnd
 		}
 	}
-
-	AskCollectionNameDialog
-	{
-		id: askCollectionNameDialog
-
-		anchors.left: parent.left
-		anchors.right: parent.right
-		anchors.verticalCenter: parent.verticalCenter
-	}
-
-	CustomDialog
-	{
-		id: deleteConfirmDialog
-		anchors.centerIn: parent
-
-		property var onOk: null
-
-		function show(text, onOk)
-		{
-			this.text = text
-			this.onOk = onOk
-			visible = true
-		}
-
-		onOkPressed: { onOk(); onOk=null;}
-	}
-
-//	MouseArea {
-//		anchors.fill: parent
-//		onClicked: {
-//			var a = app.RusListModel
-//			console.log(a.length)
-//		}
-//	}
-
 
 }

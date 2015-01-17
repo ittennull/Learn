@@ -4,7 +4,7 @@
 #include <QAbstractListModel>
 #include <QVariant>
 #include <QStringList>
-#include "Collection.h"
+#include "Storage.h"
 
 
 class CollectionModel : public QAbstractListModel

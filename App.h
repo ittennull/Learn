@@ -26,14 +26,13 @@ private:
     AppMode _appMode = AppMode::None;
 
 	Storage _storage;
-	Collection _currentCollection;
-    QStringListModel* _collectionNamesModel;
+    Collection* _currentCollection;
 
 	CheckMode _checkMode;
 	DictionaryMode _dictionaryMode;
 	RememberMode _rememberMode;
 
-    bool _collectionIsDirty = false;
+    bool _isDirty = false;
     QWindow* _window;
 
     std::shared_ptr<QTimer> _timer = std::make_shared<QTimer>();
@@ -46,11 +45,6 @@ public:
 	AppMode getAppMode() const {return _appMode;}
 	void setAppMode(AppMode mode);
 
-	Q_INVOKABLE void createCollection(const QString& name);
-	Q_INVOKABLE void deleteCollection(int index);
-
-    Q_INVOKABLE QStringListModel* getCollectionsNamesModel() {return _collectionNamesModel;}
-
 	CheckMode& getCheckMode() {return _checkMode;}
 	DictionaryMode& getDictionaryMode() {return _dictionaryMode;}
 	RememberMode& getRememberMode() {return _rememberMode;}
@@ -58,12 +52,8 @@ public:
     void setWindow(QWindow* p) {_window = p;}
 	
 signals:
-	void sigCollectionSaved(const QString& name);
+    void sigCollectionSaved();
 	void appModeChanged();
-	void newCollectionCreated();
-	
-public slots:
-	void setCollection(QString name);
 
 private:
 	void saveCollection();

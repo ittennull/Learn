@@ -10,53 +10,35 @@
 
 Storage::Storage()
 {
-	QDir dir(getCollectionsDirectoryName());
-	if (!dir.exists())
-		return;
+    auto filename = getDatabasePath();
+    QFile file(filename);
+    if (!file.exists() || !file.open(QIODevice::ReadOnly))
+        return;
 
-	auto list = dir.entryList(QStringList("*.xml"));
-	for(auto filename: list)
-		_collectionNames.push_back(QFileInfo(filename).baseName());
-}
+    QXmlStreamReader xml(&file);
 
-Collection Storage::getCollection(const QString& name) const
-{
-	auto filename = getCollectionFilename(name);
-	QFile file(filename);
-	if (!file.exists() || !file.open(QIODevice::ReadOnly))
-	{
-        std::string msg = std::string("can't find filename '") + name.toStdString() + "'";
-		throw std::invalid_argument(msg);
-	}
+    while(!xml.atEnd() && !xml.hasError())
+    {
+        QXmlStreamReader::TokenType token = xml.readNext();
 
-	Collection collection(name);
+        if (token == QXmlStreamReader::StartDocument)
+            continue;
 
-	QXmlStreamReader xml(&file);
+        if (token == QXmlStreamReader::StartElement)
+        {
+            if (xml.name() == "Record")
+            {
+                _records.push_back(parseRecord(xml));
+            }
+        }
+    }
 
-	while(!xml.atEnd() && !xml.hasError())
-	{
-		QXmlStreamReader::TokenType token = xml.readNext();
+    if(xml.hasError())
+    {
+        throw std::runtime_error( xml.errorString().toStdString() );
+    }
 
-		if(token == QXmlStreamReader::StartDocument)
-			continue;
-
-		if(token == QXmlStreamReader::StartElement)
-		{
-			if (xml.name() == "Record")
-			{
-				collection.push_back(parseRecord(xml));
-			}
-		}
-	}
-
-	if(xml.hasError())
-	{
-		throw std::runtime_error( xml.errorString().toStdString());
-	}
-
-	xml.clear();
-
-	return collection;
+    xml.clear();
 }
 
 Record Storage::parseRecord(QXmlStreamReader& xml) const
@@ -70,27 +52,25 @@ Record Storage::parseRecord(QXmlStreamReader& xml) const
 	{
 		QXmlStreamReader::TokenType token = xml.readNext();
 
-		if(token == QXmlStreamReader::EndElement && xml.name() == "Record")
-			break;
+        if (token == QXmlStreamReader::EndElement && xml.name() == "Record")
+            break;
 
-		if(token == QXmlStreamReader::StartElement && xml.name() == "Rus")
+        if (token == QXmlStreamReader::StartElement && xml.name() == "Rus")
 		{
 			rec.RusList.push_back(xml.readElementText());
 		}
 	}
 
-	return rec;
+    return rec;
 }
 
-void Storage::saveCollection(const Collection& collection) const
+void Storage::save() const
 {
-	QDir(QDir::currentPath()).mkdir(CollectionsDirectoryName);
-
-	auto filename = getCollectionFilename(collection.getName());
+    auto filename = getDatabasePath();
 	QFile file(filename);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
 	{
-		std::string msg = std::string("can't open filename ") + collection.getName().toStdString();
+        std::string msg = std::string("can't open filename ") + filename.toStdString();
 		throw std::invalid_argument(msg);
 	}
 
@@ -100,7 +80,7 @@ void Storage::saveCollection(const Collection& collection) const
 
 	stream.writeStartElement("Collection");
 
-	for(auto rec: collection)
+    for(const auto& rec: _records)
 	{
 		stream.writeStartElement("Record");
 		stream.writeAttribute("Eng", rec.Eng);
@@ -119,25 +99,7 @@ void Storage::saveCollection(const Collection& collection) const
 	stream.writeEndDocument();
 }
 
-void Storage::createCollection(const QString &name)
+QString Storage::getDatabasePath() const
 {
-	saveCollection(Collection(name));
+    return QDir::currentPath() + QDir::separator() + DatabaseName;
 }
-
-void Storage::deleteCollection(const QString &name)
-{
-	auto filename = getCollectionFilename(name);
-	QFile::remove(filename);
-}
-
-QString Storage::getCollectionsDirectoryName() const
-{
-	return QDir::currentPath() + QDir::separator() + CollectionsDirectoryName;
-}
-
-QString Storage::getCollectionFilename(const QString& name) const
-{
-	return getCollectionsDirectoryName() + QDir::separator() + name + ".xml";
-}
-
-

@@ -1,6 +1,7 @@
-import QtQuick 2.2
-import QtQuick.Controls 1.1
+import QtQuick 2.4
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.1
 import "../"
 
 Rectangle
@@ -10,8 +11,6 @@ Rectangle
     anchors.fill: parent
 
     property int editedRecordIndex: -1
-
-    property var deleteConfirmDialog: null
 
 
     function setStartState()
@@ -32,19 +31,14 @@ Rectangle
 
         rusListModel.clear()
         var rusList = dictionaryModeCpp.CurrentCollectionModel.getRusList(recordIndex)
-        for(var i=0; i<rusList.length; i++)
-            rusListModel.append({rus: rusList[i]})
+        rusList.forEach(function(rus){
+            rusListModel.append({rus: rus})
+        });
 
         engTextField.text = dictionaryModeCpp.CurrentCollectionModel.getEng(recordIndex)
         transcriptionTextField.text = dictionaryModeCpp.CurrentCollectionModel.getTranscription(recordIndex)
 
         deleteRecordButton.visible = true
-    }
-
-    Connections
-    {
-        target: dictionaryModeCpp
-        onCurrentCollectionModelChanged: setStartState()
     }
 
     GridLayout{
@@ -141,7 +135,7 @@ Rectangle
                         dictionaryModeCpp.CurrentCollectionModel.removeRecord(collectionRecordsTable.currentIndex);
                         dictionary.setStartState();
                     }
-                    deleteConfirmDialog.show("Really delete?", onOK)
+                    deleteConfirmDialog.show(onOK)
                 }
             }
         }
@@ -355,6 +349,22 @@ ScrollView {
                 }
             }
         }
+    }
+}
+
+MessageDialog {
+    id: deleteConfirmDialog
+    title: "Confirm"
+    text: "Really delete?"
+    standardButtons: StandardButton.Yes | StandardButton.Cancel
+    icon: StandardIcon.Warning
+    property var onOk: null
+
+    onYes: onOk()
+
+    function show(onOk){
+        this.onOk = onOk;
+        this.open();
     }
 }
 
