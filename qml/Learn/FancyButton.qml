@@ -5,13 +5,13 @@ Rectangle
     signal clicked()
     property alias text: textElement.text
 
-    property color gradientStop2Color: "#5ea63d"
-    property color gradientStop2HighlightedColor: '#7fc85f'
+    property color gradientStop2Color: "#77cd32"
+    property color gradientStop2HighlightedColor: '#84e336'
 
     width: 200
     height: 50
 
-    border.color: "black"
+    border.color: "#808080"
     border.width: 1
     radius: 11
 
@@ -61,6 +61,5 @@ Rectangle
 
         onPressed: border.width=2
         onReleased: border.width=1
-
     }
 }

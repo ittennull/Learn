@@ -146,6 +146,8 @@ Rectangle
             Layout.row: 3
             Layout.alignment: Qt.AlignCenter
             text: "Add"
+            gradientStop2Color: '#dec600'
+            gradientStop2HighlightedColor: '#f4da00'
             onClicked: parent.addRecord()
         }
 
