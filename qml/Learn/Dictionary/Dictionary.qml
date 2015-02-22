@@ -110,36 +110,39 @@ Rectangle
             placeholderText: "--transcription--"
         }
 
-        Text
-        {
+        Column{
             Layout.row: 3
-            color: "#5ea63d"
-            font.bold: true
-            text: dictionaryModeCpp.CurrentCollectionModel.Count
-        }
 
-        Text
-        {
-            id: deleteRecordButton
-            Layout.row: 3
-            Layout.alignment: Qt.AlignRight
-            text: "-delete-"
-            color: 'blue'
-            height: 30
-            visible: false
+            Text
+            {
+                Layout.row: 3
+                text: "Total:"
+            }
 
-            MouseArea{
-                anchors.fill: parent
-                onClicked: {
-                    var onOK = function() {
-                        dictionaryModeCpp.CurrentCollectionModel.removeRecord(collectionRecordsTable.currentIndex);
-                        dictionary.setStartState();
-                    }
-                    deleteConfirmDialog.show(onOK)
-                }
+            Text
+            {
+                Layout.row: 3
+                color: "#5ea63d"
+                font.bold: true
+                text: dictionaryModeCpp.CurrentCollectionModel.Count
             }
         }
 
+        Button{
+            id: deleteRecordButton
+            Layout.row: 3
+            Layout.alignment: Qt.AlignRight
+            text: "Delete"
+            visible: false
+
+            onClicked: {
+                var onOK = function() {
+                    dictionaryModeCpp.CurrentCollectionModel.removeRecord(collectionRecordsTable.currentIndex);
+                    dictionary.setStartState();
+                }
+                deleteConfirmDialog.show(onOK)
+            }
+        }
 
         FancyButton
         {
@@ -152,16 +155,12 @@ Rectangle
         }
 
 
-
         ListView
         {
             id: rusListView
             Layout.row: 0
-            Layout.column: 1
             Layout.rowSpan: 4
-
-            Layout.preferredWidth: 1
-            Layout.preferredHeight: 1
+            Layout.column: 1
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -174,35 +173,20 @@ Rectangle
                 anchors.left: parent.left
                 anchors.right: parent.right
 
-                RowLayout{
+                Row{
                     spacing: 5
 
-                    Rectangle //remove button
-                    {
-                        id: removeButton
-                        width: 30
-                        height: 30
-
-                        Rectangle
-                        {
-                            anchors.centerIn: parent
-                            anchors.verticalCenter: parent.verticalCenter
-                            radius: 3
-                            color: 'red'
-                            width: 20
-                            height: 6
-                        }
-
-                        MouseArea
-                        {
-                            anchors.fill: parent
-                            onClicked: rusListModel.remove(index)
-                        }
+                    Button{
+                        text: "-"
+                        width: 20
+                        height: 20
+                        onClicked: rusListModel.remove(index)
                     }
 
                     Text // translation text
                     {
-                        text:rus
+                        id: rusTranslation
+                        text: rus
 
                         MouseArea
                         {
@@ -220,7 +204,7 @@ Rectangle
                 ListView.onAdd: SequentialAnimation
                 {
                     PropertyAction { target: delegateItem; property: "height"; value: 0 }
-                    NumberAnimation { target: delegateItem; property: "height"; to: 30; duration: 250; easing.type: Easing.InOutQuad }
+                    NumberAnimation { target: delegateItem; property: "height"; to: rusTranslation.height; duration: 150; easing.type: Easing.InOutQuad }
                 }
             }
         }
@@ -294,7 +278,7 @@ ScrollView {
         delegate: Component{
             Rectangle{
                 color: 'transparent'
-                border.color: "black"
+                border.color: '#b0b0b0'
                 border.width: 1
                 radius: 3
 
