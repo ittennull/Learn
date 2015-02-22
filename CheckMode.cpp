@@ -4,8 +4,7 @@
 #include <numeric>
 
 CheckMode::CheckMode(QObject *parent) :
-	QObject(parent), _currentIndex(-1), _collection(nullptr), _russianIndex(-1), _noMoreData(true),
-	_lastRecord(nullptr)
+    QObject(parent)
 {
 }
 
@@ -36,7 +35,6 @@ QStringList CheckMode::getLastRussianList() const
 void CheckMode::setCollection(const Collection *collection)
 {
 	_collection = collection;
-	reset();
 }
 
 bool CheckMode::checkAndGoFurtherIfCorrect(QString answer)
@@ -57,7 +55,7 @@ void CheckMode::next()
 	next(true);
 }
 
-void CheckMode::reset()
+void CheckMode::reset(int numLast, int numOther)
 {
 	if (_collection == nullptr || _collection->size() == 0)
 	{
@@ -65,11 +63,8 @@ void CheckMode::reset()
 		return;
 	}
 
-	_indices.resize(_collection->size());
-    std::iota(_indices.begin(), _indices.end(), 0);
-	std::random_shuffle(_indices.begin(), _indices.end());
-	emit totalTaskNumberChanged();
-
+    prepareIndices(numLast, numOther);
+    emit totalTaskNumberChanged();
 	setCurrentRecordIndex(0);
 
 	_indicesToRepeat.clear();
@@ -78,6 +73,38 @@ void CheckMode::reset()
 	setRandomRussian();
 
 	setNoMoreData(false);
+}
+
+void CheckMode::prepareIndices(int numLast, int numOther)
+{
+    const auto max = _collection->size();
+
+    if(numLast != -1)
+    {
+        if (numLast > max)
+            numLast = max;
+        if (numLast + numOther > max)
+            numOther = max - numLast;
+    }
+
+    auto totalSize = (numLast == -1) ? max : numLast + numOther;
+    _indices.resize(totalSize);
+
+    if(numLast == -1)
+    {
+        std::iota(_indices.begin(), _indices.end(), 0);
+    }
+    else
+    {
+        std::iota(_indices.begin(), _indices.begin() + numLast, max - numLast);
+
+        decltype(_indices) temp(numOther);
+        std::iota(temp.begin(), temp.end(), 0);
+        std::random_shuffle(temp.begin(), temp.end());
+        std::copy_n(temp.begin(), numOther, _indices.begin() + numLast);
+    }
+
+    std::random_shuffle(_indices.begin(), _indices.end());
 }
 
 void CheckMode::next(bool rememberCurrent)
@@ -102,7 +129,7 @@ void CheckMode::next(bool rememberCurrent)
 
 			_indices = _indicesToRepeat;
 			std::random_shuffle(_indices.begin(), _indices.end());
-			emit totalTaskNumberChanged();
+            emit totalTaskNumberChanged();
 
 			_indicesToRepeat.clear();
 		}

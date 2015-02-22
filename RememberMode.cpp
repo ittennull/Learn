@@ -35,7 +35,6 @@ QStringList RememberMode::getLastRussianList() const
 void RememberMode::setCollection(const Collection *collection)
 {
 	_collection = collection;
-	reset();
 }
 
 void RememberMode::next()
@@ -68,7 +67,7 @@ void RememberMode::prev()
 	setNoMoreData(false);
 }
 
-void RememberMode::reset()
+void RememberMode::reset(int numLast, int numOther)
 {
 	if (_collection == nullptr || _collection->size() == 0)
 	{
@@ -76,11 +75,8 @@ void RememberMode::reset()
 		return;
 	}
 
-	_indices.resize(_collection->size());
-    std::iota(_indices.begin(), _indices.end(), 0);
-	std::random_shuffle(_indices.begin(), _indices.end());
+    prepareIndices(numLast, numOther);
 	emit totalTaskNumberChanged();
-
 	setCurrentRecordIndex(0);
 
 	setLastRecord(nullptr);
@@ -88,6 +84,38 @@ void RememberMode::reset()
 	emit englishChanged();
 
 	setNoMoreData(false);
+}
+
+void RememberMode::prepareIndices(int numLast, int numOther)
+{
+    const auto max = _collection->size();
+
+    if(numLast != -1)
+    {
+        if (numLast > max)
+            numLast = max;
+        if (numLast + numOther > max)
+            numOther = max - numLast;
+    }
+
+    auto totalSize = (numLast == -1) ? max : numLast + numOther;
+    _indices.resize(totalSize);
+
+    if(numLast == -1)
+    {
+        std::iota(_indices.begin(), _indices.end(), 0);
+    }
+    else
+    {
+        std::iota(_indices.begin(), _indices.begin() + numLast, max - numLast);
+
+        decltype(_indices) temp(numOther);
+        std::iota(temp.begin(), temp.end(), 0);
+        std::random_shuffle(temp.begin(), temp.end());
+        std::copy_n(temp.begin(), numOther, _indices.begin() + numLast);
+    }
+
+    std::random_shuffle(_indices.begin(), _indices.end());
 }
 
 void RememberMode::setLastRecord(const Record *record)

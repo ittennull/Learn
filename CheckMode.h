@@ -9,13 +9,13 @@ class CheckMode : public QObject
 {
 	Q_OBJECT
 
-	int _currentIndex;
-	const Collection* _collection;
+    int _currentIndex = -1;
+    const Collection* _collection = nullptr;
 	std::vector<int> _indices;
 	std::vector<int> _indicesToRepeat;
-	int _russianIndex;
-	bool _noMoreData;
-	const Record* _lastRecord;
+    int _russianIndex = -1;
+    bool _noMoreData = true;
+    const Record* _lastRecord = nullptr;
 
 public:
 	explicit CheckMode(QObject *parent = 0);
@@ -48,7 +48,7 @@ public:
 
 	Q_INVOKABLE bool checkAndGoFurtherIfCorrect(QString answer);
 	Q_INVOKABLE void next();
-	Q_INVOKABLE void reset();
+    Q_INVOKABLE void reset(int numLast, int numOther);
 	
 signals:
 	void russianChanged();
@@ -57,7 +57,7 @@ signals:
 	void lastRussianListChanged();
 	void noMoreDataChanged();
 	void currentTaskNumberChanged();
-	void totalTaskNumberChanged();
+    void totalTaskNumberChanged();
 
 private:
 	const Record& currentRecord() const {return (*_collection)[_indices[_currentIndex]];}
@@ -67,6 +67,7 @@ private:
 	void setNoMoreData(bool noMoreData);
 	void setRandomRussian();
 	void setCurrentRecordIndex(int idx);
+    void prepareIndices(int numLast, int numOther);
 };
 
 #endif // CHECKMODE_H

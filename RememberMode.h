@@ -45,7 +45,7 @@ public:
 
 	Q_INVOKABLE void next();
 	Q_INVOKABLE void prev();
-	Q_INVOKABLE void reset();
+    Q_INVOKABLE void reset(int numLast, int numOther);
 
 signals:
 	void englishChanged();
@@ -62,6 +62,7 @@ private:
 	void setLastRecord(const Record* record);
 	void setNoMoreData(bool noMoreData);
 	void setCurrentRecordIndex(int idx);
+    void prepareIndices(int numLast, int numOther);
 };
 
 #endif // REMEMBERMODE_H

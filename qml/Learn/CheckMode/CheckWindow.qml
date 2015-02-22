@@ -1,5 +1,6 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.3
+import "../"
 
 Rectangle
 {
@@ -19,8 +20,16 @@ Rectangle
 		answerField.text = ""
 	}
 
+    function reset(numLast, numOther){
+        checkModeCpp.reset(numLast, numOther);
+        numErrors=0
+    }
+
 	Component.onCompleted: answerField.focus = true
-	onVisibleChanged: if(visible) answerField.focus = true
+    onVisibleChanged: if(visible) {
+                          answerField.focus = true
+                          taskSize.triggerReset()
+                      }
 
 	Rectangle
 	{
@@ -43,14 +52,6 @@ Rectangle
 			wrapMode: Text.WordWrap
 			verticalAlignment: Text.AlignVCenter
 			horizontalAlignment: Text.AlignHCenter
-		}
-
-		Button
-		{
-			x: 20
-			y: 20
-			text: "Reset"
-			onClicked: {checkModeCpp.reset(); numErrors=0}
 		}
 	}
 
@@ -105,12 +106,23 @@ Rectangle
 
 		Text
 		{
+            id: statisticText
+
 			anchors.right: parent.right
 			horizontalAlignment: Text.AlignRight
 
 			text: "Progress: " + checkModeCpp.CurrentTaskNumber + "/" + checkModeCpp.TotalTaskNumber + "<br>" +
 				  "Errors: <font color=#ff0000>" + root.numErrors + "</font>";
 		}
+
+        TaskSize{
+            id: taskSize
+            anchors.top: statisticText.bottom
+            anchors.topMargin: 20
+            anchors.right: parent.right
+
+            onReset: root.reset(numLast, numOther)
+        }
 	}
 
 

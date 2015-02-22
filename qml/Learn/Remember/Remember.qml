@@ -1,12 +1,20 @@
 import QtQuick 2.4
 import QtQuick.Controls 1.3
+import "../"
 
 Rectangle
 {
 	id: root
 	anchors.fill: parent
 
-	onVisibleChanged: focus=visible
+    function reset(numLast, numOther){
+        rememberModeCpp.reset(numLast, numOther);
+    }
+
+    onVisibleChanged: if(visible) {
+                          focus=visible
+                          taskSize.triggerReset()
+                      }
 
 	Rectangle
 	{
@@ -21,15 +29,7 @@ Rectangle
 		{
 			anchors.centerIn: parent
             font.pointSize: 20
-            text: (rememberModeCpp.NoMoreData ? "\\(-_-)/" : rememberModeCpp.English)
-		}
-
-		Button
-		{
-			x: 20
-			y: 20
-			text: "Reset"
-			onClicked: rememberModeCpp.reset()
+            text: (rememberModeCpp.NoMoreData ? "--end--" : rememberModeCpp.English)
 		}
 	}
 
@@ -46,11 +46,22 @@ Rectangle
 
 		Text
 		{
+            id: statisticText
+
 			anchors.right: parent.right
 			horizontalAlignment: Text.AlignRight
 
 			text: "Progress: " + rememberModeCpp.CurrentTaskNumber + "/" + rememberModeCpp.TotalTaskNumber
 		}
+
+        TaskSize{
+            id: taskSize
+            anchors.top: statisticText.bottom
+            anchors.topMargin: 20
+            anchors.right: parent.right
+
+            onReset: root.reset(numLast, numOther)
+        }
 	}
 
 
