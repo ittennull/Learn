@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     RememberMode.cpp \
     DictionaryMode.cpp \
     CheckMode.cpp \
-    App.cpp
+    App.cpp \
+    utils.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qtquick2applicationviewer/qtquick2applicationviewer.pri)
@@ -32,7 +33,8 @@ HEADERS += \
     Storage.h \
     RememberMode.h \
     CheckMode.h \
-    App.h
+    App.h \
+    utils.h
 
 RESOURCES += \
     resource.qrc

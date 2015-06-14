@@ -66,8 +66,7 @@ private:
 	void setLastRecord(const Record* record);
 	void setNoMoreData(bool noMoreData);
 	void setRandomRussian();
-	void setCurrentRecordIndex(int idx);
-    void prepareIndices(int numLast, int numOther);
+    void setCurrentRecordIndex(int idx);
 };
 
 #endif // CHECKMODE_H

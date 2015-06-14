@@ -26,7 +26,7 @@ Rectangle
     }
 
 	Component.onCompleted: answerField.focus = true
-    onVisibleChanged: if(visible) {
+    onVisibleChanged: if (visible) {
                           answerField.focus = true
                           taskSize.triggerReset()
                       }
@@ -117,8 +117,8 @@ Rectangle
 
         TaskSize{
             id: taskSize
-            anchors.top: statisticText.bottom
-            anchors.topMargin: 20
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
             anchors.right: parent.right
 
             onReset: root.reset(numLast, numOther)

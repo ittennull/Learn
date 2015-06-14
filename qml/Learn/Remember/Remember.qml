@@ -56,8 +56,8 @@ Rectangle
 
         TaskSize{
             id: taskSize
-            anchors.top: statisticText.bottom
-            anchors.topMargin: 20
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 20
             anchors.right: parent.right
 
             onReset: root.reset(numLast, numOther)

@@ -7,6 +7,7 @@ Rectangle
 
     property color gradientStop2Color: "#77cd32"
     property color gradientStop2HighlightedColor: '#84e336'
+    property bool isActive: false
 
     width: 200
     height: 50
@@ -35,7 +36,8 @@ Rectangle
         id: textElement
         font.family: "Courier 10 Pitch"
         horizontalAlignment: Text.AlignHCenter
-        font.pointSize: 14
+        font.pointSize: isActive ? 18 : 14
+        font.bold: isActive
         anchors.centerIn: parent
     }
 

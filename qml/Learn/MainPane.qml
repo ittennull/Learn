@@ -16,18 +16,21 @@ RowLayout
     {
         text: "Check"
         onClicked: activateCheckMode();
+        isActive: checkWnd.visible;
     }
 
     FancyButton
     {
         text: "Remember"
         onClicked: activateRememberMode();
+        isActive: rememberWnd.visible;
     }
 
     FancyButton
     {
         text: "Dictionary"
         onClicked: activateDictionaryMode();
+        isActive: dictionary.visible;
     }
 }
 

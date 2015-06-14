@@ -1,7 +1,7 @@
 #include "RememberMode.h"
 #include <algorithm>
 #include <random>
-#include <numeric>
+#include "utils.h"
 
 
 RememberMode::RememberMode(QObject *parent) :
@@ -75,7 +75,7 @@ void RememberMode::reset(int numLast, int numOther)
 		return;
 	}
 
-    prepareIndices(numLast, numOther);
+    utils::prepareIndices(_indices, _collection->size(), numLast, numOther);
 	emit totalTaskNumberChanged();
 	setCurrentRecordIndex(0);
 
@@ -84,38 +84,6 @@ void RememberMode::reset(int numLast, int numOther)
 	emit englishChanged();
 
 	setNoMoreData(false);
-}
-
-void RememberMode::prepareIndices(int numLast, int numOther)
-{
-    const auto max = _collection->size();
-
-    if(numLast != -1)
-    {
-        if (numLast > max)
-            numLast = max;
-        if (numLast + numOther > max)
-            numOther = max - numLast;
-    }
-
-    auto totalSize = (numLast == -1) ? max : numLast + numOther;
-    _indices.resize(totalSize);
-
-    if(numLast == -1)
-    {
-        std::iota(_indices.begin(), _indices.end(), 0);
-    }
-    else
-    {
-        std::iota(_indices.begin(), _indices.begin() + numLast, max - numLast);
-
-        decltype(_indices) temp(numOther);
-        std::iota(temp.begin(), temp.end(), 0);
-        std::random_shuffle(temp.begin(), temp.end());
-        std::copy_n(temp.begin(), numOther, _indices.begin() + numLast);
-    }
-
-    std::random_shuffle(_indices.begin(), _indices.end());
 }
 
 void RememberMode::setLastRecord(const Record *record)

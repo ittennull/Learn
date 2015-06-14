@@ -61,8 +61,7 @@ private:
 
 	void setLastRecord(const Record* record);
 	void setNoMoreData(bool noMoreData);
-	void setCurrentRecordIndex(int idx);
-    void prepareIndices(int numLast, int numOther);
+    void setCurrentRecordIndex(int idx);
 };
 
 #endif // REMEMBERMODE_H
