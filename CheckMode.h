@@ -13,7 +13,8 @@ class CheckMode : public QObject
     const Collection* _collection = nullptr;
 	std::vector<int> _indices;
 	std::vector<int> _indicesToRepeat;
-    int _russianIndex = -1;
+    std::vector<int> _russianIndices; //list of all translations in random order
+    int _russianIndex = -1; //current translation from _russianIndices
     bool _noMoreData = true;
     const Record* _lastRecord = nullptr;
 
@@ -41,6 +42,8 @@ public:
 	Q_PROPERTY(int TotalTaskNumber READ getTotalTaskNumber NOTIFY totalTaskNumberChanged)
 	int getTotalTaskNumber() const {return _indices.size();}
 
+    Q_PROPERTY(bool HasManyTranslations READ hasManyTranslations NOTIFY hasManyTranslationsChanged)
+    int hasManyTranslations() const {return _russianIndices.size() > 1;}
 
 	void setCollection(const Collection* collection);
 	const Collection* getCollection() const {return _collection;}
@@ -49,6 +52,7 @@ public:
 	Q_INVOKABLE bool checkAndGoFurtherIfCorrect(QString answer);
 	Q_INVOKABLE void next();
     Q_INVOKABLE void reset(int numLast, int numOther);
+    Q_INVOKABLE void nextRussian(bool forward);
 	
 signals:
 	void russianChanged();
@@ -58,6 +62,7 @@ signals:
 	void noMoreDataChanged();
 	void currentTaskNumberChanged();
     void totalTaskNumberChanged();
+    void hasManyTranslationsChanged();
 
 private:
 	const Record& currentRecord() const {return (*_collection)[_indices[_currentIndex]];}

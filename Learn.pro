@@ -3,6 +3,8 @@ folder_01.source = qml/Learn
 folder_01.target = qml
 DEPLOYMENTFOLDERS = folder_01
 
+QMAKE_MAC_SDK = macosx10.11
+
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 

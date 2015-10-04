@@ -40,9 +40,20 @@ Rectangle
 		anchors.top: parent.top
 		height: 250
 
+        Text{
+            id: multipleRussiansMark
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.leftMargin: 10
+
+            text: "*"
+            font.pixelSize: 60
+            visible: checkModeCpp.HasManyTranslations
+        }
+
 		Text
 		{
-			anchors.left: parent.left
+            anchors.left: multipleRussiansMark.right
 			anchors.right: parent.right
 			anchors.top: parent.top
 			anchors.bottom: parent.bottom
@@ -89,6 +100,8 @@ Rectangle
 
             Keys.onReturnPressed: giveUpAndGoToNestWord()
             Keys.onEnterPressed: giveUpAndGoToNestWord()
+            Keys.onUpPressed: checkModeCpp.nextRussian(false)
+            Keys.onDownPressed: checkModeCpp.nextRussian(true)
 		}
 	}
 

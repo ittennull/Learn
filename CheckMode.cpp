@@ -126,13 +126,29 @@ void CheckMode::setRandomRussian()
 {
 	const auto& rusList = currentRecord().RusList;
 
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(0, rusList.size() - 1);
+    _russianIndices.resize(rusList.size());
+    if(_russianIndices.size() > 1)
+    {
+        std::iota(_russianIndices.begin(), _russianIndices.end(), 0);
+        std::random_shuffle(_russianIndices.begin(), _russianIndices.end());
+    }
 
-	_russianIndex = dis(gen);
+    _russianIndex = 0;
 
 	emit russianChanged();
+    emit hasManyTranslationsChanged();
+}
+
+void CheckMode::nextRussian(bool forward){
+    if(_russianIndices.size() < 1)
+        return;
+
+    if(forward)
+        _russianIndex = (_russianIndex + 1) % _russianIndices.size();
+    else
+        _russianIndex = (_russianIndex == 0) ? _russianIndices.size() - 1 : _russianIndex - 1;
+
+    emit russianChanged();
 }
 
 void CheckMode::setCurrentRecordIndex(int idx)
